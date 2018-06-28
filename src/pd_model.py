@@ -81,7 +81,7 @@ def lasso_model(X_train, X_hold, y_train, y_hold):
     lasso_mean_cv_errors_train = lasso_cv_errors_train.mean(axis=0)
     lasso_mean_cv_errors_test = lasso_cv_errors_test.mean(axis=0)
     lasso_optimal_alpha = get_optimal_alpha(lasso_mean_cv_errors_test)
-    save_fig(plot_mean_CV_error(lasso_mean_cv_errors_train, lasso_mean_cv_errors_test, lasso_alphas, lasso_optimal_alpha,'Optimal Lasso-Alpha Level'),'lasso_alpha_new_model.png')
+    save_fig(plot_mean_CV_error(lasso_mean_cv_errors_train, lasso_mean_cv_errors_test, lasso_alphas, lasso_optimal_alpha,'Optimal Lasso-Alpha Level'),'lasso_alpha_est_model.png')
 
 
     standardizer = XyScaler()
@@ -106,7 +106,7 @@ def ridge_model(X_train, X_hold, y_train, y_hold):
     ridge_mean_cv_errors_test = ridge_cv_errors_test.mean(axis=0)
     ridge_optimal_alpha = get_optimal_alpha(ridge_mean_cv_errors_test)
     save_fig(plot_mean_CV_error(ridge_mean_cv_errors_train, ridge_mean_cv_errors_test, ridge_alphas, ridge_optimal_alpha,
-    'Optimal Ridge-Alpha Level'),'ridge_alpha_new_model.png')
+    'Optimal Ridge-Alpha Level'),'ridge_alpha_est_model.png')
 
     standardizer = XyScaler()
     standardizer.fit(X_train.values, y_train.values)
@@ -205,19 +205,19 @@ y_hold3_total = df.groupby('subject#')['total_UPDRS'].apply(lambda x: x.tail(int
 
 
 #Running Models
-lin_model = linear_model(X_train2,X_hold2,y_train2_total,y_hold2_total)
+lin_model = linear_model(X_train3,X_hold3,y_train3_total,y_hold3_total)
 coef_df_linear = get_coefs(lin_model[0],X_train)
 print("Linear coefficients:")
 print(coef_df_linear)
 
 
 
-las_model = lasso_model(X_train2,X_hold2,y_train2_total,y_hold2_total)
+las_model = lasso_model(X_train3,X_hold3,y_train3_total,y_hold3_total)
 coef_df_lasso = get_coefs(las_model[0],X_train)
 
 
 
-rg_model = ridge_model(X_train2,X_hold2,y_train2_total,y_hold2_total)
+rg_model = ridge_model(X_train3,X_hold3,y_train3_total,y_hold3_total)
 coef_df_ridge = get_coefs(rg_model[0],X_train)
 
 
