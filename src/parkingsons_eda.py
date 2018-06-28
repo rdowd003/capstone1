@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from getdata import get_df
 from itertools import cycle
+from matplotlib.artist import setp
 cycol = cycle('bgrcmk')
 
 
@@ -35,7 +36,6 @@ df_onset=df_tt.groupby('subject#')['total_UPDRS','motor_UPDRS','age','Jitter(%)'
 df_onset.rename(columns={'total_UPDRS':'Total Score','motor_UPDRS':'Motor Score','Jitter(Abs)':'Jitter'})
 
 # Creating score change column series
-
 
 
 
@@ -90,7 +90,7 @@ ax2.set_ylabel('Score')
 ax1.set_title('Total Score')
 ax2.set_title('Motor Score')
 plt.suptitle('Time Progression of UPDRS For n=5 Patients')
-plt.legend(labels=['Patient 1','Patient 2','Patient 3','Patient 4','Patient 5'])
+plt.legend(labels=['Patient 1','Patient 2','Patient 3','Patient 4','Patient 5'],loc=3, bbox_to_anchor=(1.0, 0.5))
 plt.show()
 
 
@@ -109,12 +109,12 @@ ax.set_xlabel('Days in Trial')
 ax2 = ax.twinx()
 ax2.spines['right'].set_position(('axes', 1.0))
 ax2.plot(x1,y_ppe,'ko--',alpha=0.3)
+ax1.set_ylabel('Jitter')
+ax2.set_ylabel('Shimmer')
+plt.title('Single Patient Fluctuation in Jitter and Shimmer Over Time')
 
-
-#plt.plot(x1,y_jitter)
-#plt.plot(x1,y_shimmer)
-#plt.plot(x1,y_dfa)
-ax2.legend(['Jitter','Shimmer'])
+ax1.legend('Jitter')
+ax2.legend('Shimmer',loc=0)
 plt.show()
 
 #work on legend ^^^^^
@@ -130,33 +130,23 @@ df_energy = df[['total_UPDRS','motor_UPDRS','RPDE','PPE']]
 df_noise = df[['total_UPDRS','motor_UPDRS','HNR','NHR','DFA']]
 df_subset = df[['total_UPDRS','motor_UPDRS','Jitter(%)','Shimmer','age','HNR','RPDE']]
 
-ax1 = pd.plotting.scatter_matrix(df_jitter,alpha=0.2, figsize=(6, 6), diagonal='kde')
-plt.suptitle('Jitter Components')
-[plt.setp(item.yaxis.get_label(), 'size', 7,rotation=0) for item in ax1.ravel()]
-[plt.setp(item.xaxis.get_label(), 'size', 6,rotation=45) for item in ax1.ravel()]
-plt.show()
-ax2 = pd.plotting.scatter_matrix(df_shimmer,alpha=0.2, figsize=(6, 6), diagonal='kde')
-plt.suptitle('Shimmer Components')
-[plt.setp(item.yaxis.get_label(), 'size', 7,rotation=0) for item in ax2.ravel()]
-[plt.setp(item.xaxis.get_label(), 'size', 6,rotation=45) for item in ax2.ravel()]
-plt.show()
-ax3 = pd.plotting.scatter_matrix(df_energy,alpha=0.2, figsize=(6, 6), diagonal='kde')
-plt.suptitle('Energy Components')
-[plt.setp(item.yaxis.get_label(), 'size', 7,rotation=0) for item in ax3.ravel()]
-[plt.setp(item.xaxis.get_label(), 'size', 6,rotation=45) for item in ax3.ravel()]
-plt.show()
-ax4 = pd.plotting.scatter_matrix(df_noise,alpha=0.2, figsize=(6, 6), diagonal='kde')
-plt.suptitle('Noise Components')
-[plt.setp(item.yaxis.get_label(), 'size', 7,rotation=0) for item in ax4.ravel()]
-[plt.setp(item.xaxis.get_label(), 'size', 6,rotation=45) for item in ax4.ravel()]
-plt.show()
-ax5 = pd.plotting.scatter_matrix(df_subset,alpha=0.2, figsize=(6, 6), diagonal='kde')
-plt.suptitle('Overall Components')
-[plt.setp(item.yaxis.get_label(), 'size', 7,rotation=0) for item in ax5.ravel()]
-[plt.setp(item.xaxis.get_label(), 'size', 6,rotation=45) for item in ax5.ravel()]
-plt.show()
+
+def plot_scatter(df,title,figzise):
+    ax1 = pd.plotting.scatter_matrix(df,alpha=0.2, figsize=(10, 7), diagonal='kde')
+    plt.suptitle(title)
+    [plt.setp(item.yaxis.get_label(), 'size', 6,rotation=80) for item in ax1.ravel()]
+    [plt.setp(item.xaxis.get_label(), 'size', 6,rotation=45) for item in ax1.ravel()]
+    plt.subplots_adjust(left=0.1, bottom=0.1, right=None, top=None, wspace=None, hspace=None)
+    [plt.setp(item.get_xticklabels(), fontsize=4)for item in ax1.ravel()]
+    [plt.setp(item.get_yticklabels(), fontsize=4)for item in ax1.ravel()]
+    plt.show()
 
 
+plot_scatter(df_jitter,'Jitter Components',(10,7))
+plot_scatter(df_shimmer,'Shimmer Components',(10,7))
+plot_scatter(df_energy,'Energy Components',(6,6))
+plot_scatter(df_noise,'Jitter Components',(6,6))
+plot_scatter(df_subset,'Subset of Overall Components',(6,6))
 
 #Distribution of Scores at Onset
 fig2,(ax1,ax2) = plt.subplots(1,2,figsize=(9,5))

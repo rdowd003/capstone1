@@ -1,4 +1,4 @@
-# Predicting The Progression of Parkinson's Disease Scores With Voice Processing Metrics
+# Predicting The Progression of Parkinson's Disease Scores With Vocal Processing Metrics
 
 The goal of this analysis is to use a number of telemonitoring metrics to
 predict the _Unified Parkinson's Disease Rating Scale (UPDRS) score_
@@ -126,11 +126,9 @@ Features scatters:
 
 **1. Generating train & test splits**
 
-  i)   Reserving last fourth of patients - better for 'new patient' model, worse predictive ability (lower R^2)
+  i)  Training model with roughly top 75% of data, leaving data from 10 patients as unseen test data  - better for a 'new patient' model, worse predictive ability (lower R^2)
 
-  ii)  Randomizing train/test subsets - not useful for a 'new patient' model
-
- iii) Training model with top 75% of data for each patient - 'Established patient model'
+ ii) Training model with top 75% of data of each patient, last 25% for unseen test data - 'Established patient model'
 
 **2.  Model Results**
 
@@ -214,7 +212,7 @@ Features scatters:
   | Final MSE  |  1.85  | 1.74  | 1.67  |
   | Alpha  | N/A   | 100  | 0.01  |
 
-  iiib) "New Patient" Model - Motor UPDRS Score
+  iiib) "Established Patient" Model - Motor UPDRS Score
 
 | Model Result  | Linear Model  | Ridge Model  | Lasso Model  |
 | --------------- |:---------------:|:---------------:|---------------:|
@@ -222,7 +220,7 @@ Features scatters:
 | Final MSE  |  0.85  | 0.85  | 0.86  |
 | Alpha  | N/A   | 49.23   | 0.01  |
 
-*3. Why is it predicting so poorly when literature supports the contrary? ...
+*3. Why are these models predicting so poorly when literature supports the contrary? ...
 Variable Inflation Factor Test*
 
 
@@ -247,6 +245,7 @@ Variable Inflation Factor Test*
 | DFA | 9.23e+01 |
 | PPA| 2.86e+01 |
 
+## Scatter matrices
 
 ## Future Work:
 First and foremost, future work would include the further development of this

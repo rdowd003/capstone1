@@ -17,13 +17,6 @@ def mse(y, y_hat):
     return np.mean((y  - y_hat)**2)
 
 
-#Cross validation
-#Targets:
-# 1. Total Score
-# 2. Motor Score
-# 3. Change in Score over time
-
-
 def cross_valid(X, y, base_estimator, n_folds, random_seed=154):
     models = []
     kf = KFold(n_splits=n_folds, shuffle = True, random_state=random_seed)
@@ -71,9 +64,10 @@ def linear_model(X_train, X_hold, y_train, y_hold):
     y_hold_pred_std = final_linear.predict(X_hold_std)
     final_linear_mse = mse(y_hold_std, y_hold_pred_std)
     r2 = r2_score(y_hold_std,y_hold_pred_std)
+    ress = y_hold_std - y_hold_pred_std
     print("Linear R2 Score: ",r2)
     print("Final Linear MSE: ",final_linear_mse)
-    return (final_linear,y_hold_std,y_hold_pred_std,final_linear_mse)
+    return (final_linear,y_hold_std,y_hold_pred_std,ress,final_linear_mse)
 
 def lasso_model(X_train, X_hold, y_train, y_hold):
     lasso_alphas = np.logspace(-2,2, num=40)
@@ -81,7 +75,8 @@ def lasso_model(X_train, X_hold, y_train, y_hold):
     lasso_mean_cv_errors_train = lasso_cv_errors_train.mean(axis=0)
     lasso_mean_cv_errors_test = lasso_cv_errors_test.mean(axis=0)
     lasso_optimal_alpha = get_optimal_alpha(lasso_mean_cv_errors_test)
-    save_fig(plot_mean_CV_error(lasso_mean_cv_errors_train, lasso_mean_cv_errors_test, lasso_alphas, lasso_optimal_alpha,'Optimal Lasso-Alpha Level'),'lasso_alpha_est_model.png')
+    save_fig(plot_mean_CV_error(lasso_mean_cv_errors_train, lasso_mean_cv_errors_test, lasso_alphas,
+    lasso_optimal_alpha,'Optimal Lasso-Alpha Level'),'lasso_alpha_new_model2.png')
 
 
     standardizer = XyScaler()
@@ -106,7 +101,7 @@ def ridge_model(X_train, X_hold, y_train, y_hold):
     ridge_mean_cv_errors_test = ridge_cv_errors_test.mean(axis=0)
     ridge_optimal_alpha = get_optimal_alpha(ridge_mean_cv_errors_test)
     save_fig(plot_mean_CV_error(ridge_mean_cv_errors_train, ridge_mean_cv_errors_test, ridge_alphas, ridge_optimal_alpha,
-    'Optimal Ridge-Alpha Level'),'ridge_alpha_est_model.png')
+    'Optimal Ridge-Alpha Level'),'ridge_alpha_new_model2.png')
 
     standardizer = XyScaler()
     standardizer.fit(X_train.values, y_train.values)
@@ -116,10 +111,11 @@ def ridge_model(X_train, X_hold, y_train, y_hold):
     y_hold_pred_std = final_ridge.predict(X_hold_std)
     final_ridge_mse = mse(y_hold_std, y_hold_pred_std)
     r2 = r2_score(y_hold_std,y_hold_pred_std)
+    ress = y_hold_std - y_hold_pred_std
     print("Ridge R2 score is: ",r2)
     print("Final Ridge RSS: ",final_ridge_mse)
     print("Optimal Ridge Alpha: ",ridge_optimal_alpha)
-    return (final_ridge,y_hold_std,y_hold_pred_std,final_ridge_mse,X_hold_std)
+    return (final_ridge,y_hold_std,y_hold_pred_std,ress,final_ridge_mse,X_hold_std)
 
 def get_coefs(model,X):
     df = pd.DataFrame(model.coef_)
@@ -154,105 +150,111 @@ def plot_mean_CV_error(cv_error_train, cv_error_test, alphas, optimal_alpha,titl
     ax.legend()
     ax.set_ylabel("MSE")
     plt.tight_layout()
-
+    plt.show()
 
 def save_fig(plot_fxn,name):
     plot_fxn
     plt.savefig(name)
 
+
+def run_model(model_fxn,X_train,X_hold,y_train,y_hold,model_type):
+    model = model_fxn(X_train,X_hold,y_train,y_hold)
+    coeffs = get_coefs(model[0],X_train)
+    return (model,coeffs)
+    print(model_type,'Coefficients:')
+    print(coeffs)
+
+
+
+
+
+#Import Data
+
+
 df = get_df('parkinsons_data.csv')
+df['week'] = pd.cut(df['test_time'],bins=27,include_lowest=True)
 #df_est = df.groupby('subject#').head(100)
 
-# Splitting data for test/hold @ ~75 % - hold out subjects 33-42
-#______________________________________________________________________________
-#Predictor test/train splits (random, by patient, established patient)
+#Splitting Data Train/Test
 
-#Random model
-X = df.drop(columns=['subject#','test_time','motor_UPDRS','total_UPDRS'])
+#1. Random model
+X = df.drop(columns=['subject#','test_time','motor_UPDRS','total_UPDRS','week'])
 y_total = df['total_UPDRS']
 y_motor = df['motor_UPDRS']
 X_train, X_hold, y_train_motor, y_hold_motor = train_test_split(X, y_motor, test_size=.1)
 
 
-#Split, hold off last 11 patients
+#2. New Patient Model, hold off last 11 patients
 X_train2 = df[df['subject#']<33].reindex()
-X_train2 = X_train2.drop(columns=['subject#','test_time','motor_UPDRS','total_UPDRS'])
+X_train2 = X_train2.drop(columns=['subject#','test_time','motor_UPDRS','total_UPDRS','week'])
 X_hold2 = df[df['subject#']>=33].reindex()
-X_hold2 = X_hold2.drop(columns=['subject#','test_time','motor_UPDRS','total_UPDRS'])
-
+X_hold2 = X_hold2.drop(columns=['subject#','test_time','motor_UPDRS','total_UPDRS','week'])
 
 # Total Score test/train splits
 y_train2_total = df[df['subject#']<33]['total_UPDRS']
 y_hold2_total = df[df['subject#']>=33]['total_UPDRS']
 
 # Motor Score test/train splits
-#y_train_motor = df[df['subject#']<33]['motor_UPDRS']
-#y_hold_motor = df[df['subject#']>=33]['motor_UPDRS']
+y_train2_motor = df[df['subject#']<33]['motor_UPDRS']
+y_hold2_motor = df[df['subject#']>=33]['motor_UPDRS']
 
 
-#Established Patient (return) model
-a = 0.75 #Percent to take for training
-b = 1-a
+#3. Established Patient (return) Model Splits
+a = 0.75 #top a% to take for training
+b = 1-a  #tail end, b% for test
 X_est = df.groupby('subject#').apply(lambda x: x.head(int(len(x) * (a))))
-X_train3 = X_est.drop(columns=['subject#','test_time','motor_UPDRS','total_UPDRS'])
+X_train3 = X_est.drop(columns=['subject#','test_time','motor_UPDRS','total_UPDRS','week'])
 
 X_hold3 = df.groupby('subject#').apply(lambda x: x.tail(int(len(x) * (b))))
-X_hold3 = X_hold3.drop(columns=['subject#','test_time','motor_UPDRS','total_UPDRS'])
+X_hold3 = X_hold3.drop(columns=['subject#','test_time','motor_UPDRS','total_UPDRS','week'])
 
 y_train3_total = df.groupby('subject#')['total_UPDRS'].apply(lambda x: x.head(int(len(x) * (a))))
 y_hold3_total = df.groupby('subject#')['total_UPDRS'].apply(lambda x: x.tail(int(len(x) * (b))))
+y_train3_motor = df.groupby('subject#')['motor_UPDRS'].apply(lambda x: x.head(int(len(x) * (a))))
+y_hold3_motor= df.groupby('subject#')['motor_UPDRS'].apply(lambda x: x.tail(int(len(x) * (b))))
 
 
 
-#Running Models
-lin_model = linear_model(X_train3,X_hold3,y_train3_total,y_hold3_total)
-coef_df_linear = get_coefs(lin_model[0],X_train)
-print("Linear coefficients:")
-print(coef_df_linear)
-
-
-
-las_model = lasso_model(X_train3,X_hold3,y_train3_total,y_hold3_total)
-coef_df_lasso = get_coefs(las_model[0],X_train)
-
-
-
-rg_model = ridge_model(X_train3,X_hold3,y_train3_total,y_hold3_total)
-coef_df_ridge = get_coefs(rg_model[0],X_train)
-
-
+linear = run_model(linear_model,X_train3,X_hold3,y_train3_total,y_hold3_total,'Linear Model')
+lasso = run_model(lasso_model,X_train3,X_hold3,y_train3_total,y_hold3_total,'Lasso Model')
+ridge = run_model(ridge_model,X_train3,X_hold3,y_train3_total,y_hold3_total,'Ridge Model')
 
 #plot of residuals
-plt.scatter(las_model[2],las_model[3])
-#plt.xlim([-2,2])
-#plt.ylim([-2,2])
-plt.xlabel('True Total UPDRS Scores Standardized')
-plt.ylabel('Predicted Total UPDRS Scores Standardized')
-#plt.show()
+plt.scatter(linear[0][2],linear[0][3])
+plt.xlim([-4,4])
+plt.ylim([-4,4])
+plt.xlabel('True Standardized Total UPDRS Scores')
+plt.ylabel('Predicted Standardized Total UPDRS Scores')
+plt.show()
+
 
 #Plot coefficients for Lasso & Ridge
-X_coef = X_train.columns
-N=len(X_coef)
+X_cols = X_train.columns
+N=len(X_cols)
 ind = np.arange(N)
 w = 0.5
+model_coefs = linear[1]
+
+
+### FIX THIS ###
 fig = plt.figure(figsize=(10,6))
 ax = fig.add_subplot(111)
-p1 = ax.bar(ind,coef_df_lasso[0],w)
-p2 = ax.bar(ind+w,coef_df_ridge[0],w)
+p1 = ax.bar(ind,model_coefs[0],w)
+p2 = ax.bar(ind+w,model_coefs[0],w)
 ax.set_xticks(ind + w / 2)
-ax.set_xticklabels(X_coef)
+ax.set_xticklabels(X_cols)
 ax.set_xlabel('Parameter')
 ax.set_ylabel('Standardized Coefficient')
-ax.set_title('Standardized Lasso and Ridge coefficients: Established Patient Model')
+ax.set_title('Standardized Lasso and Ridge coefficients: New Patient Model, Motor Score')
 ax.legend((p1[0], p2[0]), ('Lasso', 'Ridge'))
 plt.axhline(0, color='blue')
 plt.xticks(rotation=45)
 plt.tight_layout()
-#plt.show()
+plt.show()
 
 
 
 
 
 
-      #
+#
