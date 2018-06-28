@@ -126,7 +126,7 @@ Features scatters:
 
 2.  Model Results
 
-  i) Split by patient
+  i) "New Patient" Model
 
 | Model Result  | Linear Model  | Ridge Model  | Lasso Model  |
 | --------------- |:---------------:|:---------------:|---------------:|
@@ -137,31 +137,65 @@ Features scatters:
 *Insert plot of ridge alpha, lasso alpha vs MSE,*
 *All 3 prediction plots?*
 
-| Parameter    | Linear  | Ridge  | Lasso  |
+| Parameter    | Linear  |
 | --------------- |:---------------:|
-| Age |  0.33  |  0.317519 | 0.32 |
-| Sex  |   -0.12   | -0.09 | 0.32 |
-| Jitter(%)  | 0.04   | 0.00 | -0.09 |
-| Jitter(Abs)  | -0.14  | - 0.00 | 0.00 |
-| Jitter:RAP | 0.99   | 0.12 | 0.12 |
-| Jitter:PPQ5 | -0.22   |  0.00 |  0.00 |
-| Jitter:DDP | -0.55  | 0.00 | 0.00 |
-| Shimmer | -0.13 | -0.00 | -0.00 |
-| Shimmer(dB)| -0.08 | -0.00 | -0.00 |
-| Shimmer:APQ3  | -84.01 | -0.05 | -0.05 |
-| Shimmer:APQ5 |   0.26  | -0.00  | -0.00 |
-| Shimmer:APQ11  | -0.002  | -0.00 | 0.00 |
-| Shimmer:DDA  | 83.87  | -0.00 | -0.00 |
-| NHR | -0.22  | -0.15 | -0.15 |
-| HNR | -0.20 | -0.16 | -0.16 |
-| RPDE | 0.16  | 0.14 | 0.13 |
-| DFA | -0.32 | -0.29 | -0.29 |
-| PPA| 0.09 | 0.03 | 0.03 |
+| Age |  0.33  |  
+| Sex  |   -0.12   |
+| Jitter(%)  | 0.04   |
+| Jitter(Abs)  | -0.14  |
+| Jitter:RAP | **0.99**   |
+| Jitter:PPQ5 | -0.22   |  
+| Jitter:DDP | **-0.55**  |
+| Shimmer | -0.13 |
+| Shimmer(dB)| -0.08 |
+| Shimmer:APQ3  | -84.01 |
+| Shimmer:APQ5 |   0.26  |
+| Shimmer:APQ11  | -0.002  |
+| Shimmer:DDA  | 83.87  |
+| NHR | -0.22  |
+| HNR | -0.20 |
+| RPDE | 0.16  |
+| DFA | -0.32 |
+| PPA| 0.09 |
 
+![Lasso & Ridge Coefficients](https://github.com/rdowd003/capstone1/blob/master/Images/new_patient_coefficients.png)
 
+![Lasso Alpha Optimization](https://github.com/rdowd003/capstone1/blob/master/Images/lasso_alpha_new_model.png)
+![Ridge Alpha Optimization](https://github.com/rdowd003/capstone1/blob/master/Images/ridge_alpha_new_model.png)
 
-  ii. Randomized  - maybe just show coefficient path?
+  ii)   i) "Established Patient" Model
 
+  | Model Result  | Linear Model  | Ridge Model  | Lasso Model  |
+  | --------------- |:---------------:|:---------------:|---------------:|
+  | R^2 | -1.66 | -1.58 | -1.35 |
+  | Final MSE  |  1.99  | 1.77  | 1.99  |
+  | Alpha  | N/A   | 24.24   | 0.01  |
+
+  | Parameter    | Linear  |
+  | --------------- |:---------------:|
+  | Age |  0.25 |  
+  | Sex  |   -0.12   |
+  | Jitter(%)  | 0.09  |
+  | Jitter(Abs)  | -0.21  |
+  | Jitter:RAP | **-13.72**   |
+  | Jitter:PPQ5 | -0.13  |  
+  | Jitter:DDP | **13.90**  |
+  | Shimmer | 0.29 |
+  | Shimmer(dB)| -0.13 |
+  | Shimmer:APQ3  | -58.47 |
+  | Shimmer:APQ5 |   -0.13  |
+  | Shimmer:APQ11  | 0.09  |
+  | Shimmer:DDA  |  58.23  |
+  | NHR | -0.07 |
+  | HNR | -0.24 |
+  | RPDE | 0.03  |
+  | DFA | -0.20 |
+  | PPA| 0.15 |
+
+  ![Lasso & Ridge Coefficients](https://github.com/rdowd003/capstone1/blob/master/Images/est_patient_coefficients.png)
+
+  ![Lasso Alpha Optimization](https://github.com/rdowd003/capstone1/blob/master/Images/lasso_alpha_est_model.png)
+  ![Ridge Alpha Optimization](https://github.com/rdowd003/capstone1/blob/master/Images/ridge_alpha_est_model.png)
 
 
 Why is it predicting so poorly when literature supports the contrary?
