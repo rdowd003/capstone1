@@ -30,16 +30,12 @@ patient, and may be on of the earliest indicators of disease onset[1].
 Recent literature has shown promising results illustrating the ability of the
 vocal processing metrics (used in this analysis) to distinguish healthy patients
 from those diagnosed with Parkinson's Disease [1,2,8].The benefit of developing
-an accurate model using these metrics is two fold:
+an accurate, score-predicting model using these metrics is two fold:
 
-1. Improve the clinician's ability to *diagnose disease onset
-earlier* than later in order to extend the presence of a higher quality of life.
-2. Develop a reliable *remote disease-progression tracking
+1. Score: Improve the clinician's ability to *diagnose disease onset
+earlier* rather than later in order to extend the presence of a higher quality of life.
+2. Time-Progression: Develop a reliable, *remote disease-progression tracking
 mechanism* that patients can use at home.
-
-
-##### Focus is: 1, how scores are distributed at onset and 2, how scores change
-##over time
 
 
 ## Data
@@ -66,43 +62,55 @@ Population/scores:
 ## Features
 The initial dataset included the following metrics (16):
 
-**Demographics**
+#### Demographics
 
-subject # - unique patient identifier
-age - subject age; range 36-85
-sex - male/female
-test_time - number of days since recruitment
+**subject #** - unique patient identifier
 
-**Periodicity**
+**age** - subject age; range 36-85
 
-Jitter(%) - Difference between length of signal periods in consecutive cycles divided by average
-Jitter(Abs) - absolute of average
-Jitter:RAP - average of difference between a peak and the difference between
-it and it's two closes neighbors
-Jitter:PPQ5 - 5 closes neighbors
-Jitter:DDP - average of differences between consecutive differences (Jitter(%))
+**sex** - male/female
 
-**Amplitude**
+**test_time** - number of days since recruitment
 
-Shimmer - difference in amplitude between consecutive peaks
-Shimmer(dB) - base-10 log of difference in consecutive amplitudes
-Shimmer:APQ3 - average of difference between amplitude of a peak and the average
-amplitude of three closest neighbors
-Shimmer:APQ5 - 5 closes neighbors
-Shimmer:APQ11 - 11 closest neighbors
-Shimmer:DDA - average of differences between consecutive differences (shimmer)
+### Periodicity
 
-**Noise**
+**Jitter(%)** - Difference between length of signal periods in consecutive cycles divided by average
 
-NHR - ratio of noise : tonal components in voice; noise-harmony ratio
-HNR - ratio of noise : tonal components in voice; harmonics-noise ratio
-DFA - Detended Flucuation Analysis: quantifies self-similarity of noise
+**Jitter(Abs)** - absolute of average
 
-**Energy**
+**Jitter:RAP** - average of difference between a peak and the difference between it and it's two closes neighbors
 
-RPDE - Recurrence Period Density Entropy : measure of vocal cords ability to
-sustain stable vibrations
-PPE - Pitch Period Entropy: measure of impairment in pitch stability
+**Jitter:PPQ5** - 5 closes neighbors
+
+**Jitter:DDP** - average of differences between consecutive differences (Jitter(%))
+
+### Amplitude
+
+**Shimmer** - difference in amplitude between consecutive peaks
+
+**Shimmer(dB)** - base-10 log of difference in consecutive amplitudes
+
+**Shimmer:APQ3** - average of difference between amplitude of a peak and the average amplitude of three closest neighbors
+
+**Shimmer:APQ5** - 5 closes neighbors
+
+**Shimmer:APQ11** - 11 closest neighbors
+
+**Shimmer:DDA** - average of differences between consecutive differences (shimmer)
+
+### Noise
+
+**NHR** - ratio of noise : tonal components in voice; noise-harmony ratio
+
+**HNR** - ratio of noise : tonal components in voice; harmonics-noise ratio
+
+**DFA** - Detended Flucuation Analysis: quantifies self-similarity of noise
+
+### Energy
+
+**RPDE** - Recurrence Period Density Entropy : measure of vocal cords ability to sustain stable vibrations
+
+**PPE** - Pitch Period Entropy: measure of impairment in pitch stability
 
 
 ## Feature Engineering
@@ -116,7 +124,7 @@ Features scatters:
 
 ## Modeling
 
-1. Generating train & test splits
+**1. Generating train & test splits**
 
   i)   Reserving last fourth of patients - better for 'new patient' model, worse predictive ability (lower R^2)
 
@@ -124,9 +132,9 @@ Features scatters:
 
  iii) Training model with top 75% of data for each patient - 'Established patient model'
 
-2.  Model Results
+**2.  Model Results**
 
-  i) "New Patient" Model
+  i) "New Patient" Model - Total UPDRS Score
 
 | Model Result  | Linear Model  | Ridge Model  | Lasso Model  |
 | --------------- |:---------------:|:---------------:|---------------:|
@@ -163,13 +171,13 @@ Features scatters:
 ![Lasso Alpha Optimization](https://github.com/rdowd003/capstone1/blob/master/Images/lasso_alpha_new_model.png)
 ![Ridge Alpha Optimization](https://github.com/rdowd003/capstone1/blob/master/Images/ridge_alpha_new_model.png)
 
-  ii)   i) "Established Patient" Model
+  ii)  "Established Patient" Model - Total UPDRS Score
 
   | Model Result  | Linear Model  | Ridge Model  | Lasso Model  |
   | --------------- |:---------------:|:---------------:|---------------:|
-  | R^2 | -1.66 | -1.58 | -1.35 |
-  | Final MSE  |  1.99  | 1.77  | 1.99  |
-  | Alpha  | N/A   | 24.24   | 0.01  |
+  | R^2 | 0.18 | 0.18| 0.17 |
+  | Final MSE  |  0.83  | 0.83  | 0.84  |
+  | Alpha  | N/A   | 49.24  | 0.01  |
 
   | Parameter    | Linear  |
   | --------------- |:---------------:|
@@ -195,10 +203,27 @@ Features scatters:
   ![Lasso & Ridge Coefficients](https://github.com/rdowd003/capstone1/blob/master/Images/est_patient_coefficients.png)
 
   ![Lasso Alpha Optimization](https://github.com/rdowd003/capstone1/blob/master/Images/lasso_alpha_est_model.png)
+
   ![Ridge Alpha Optimization](https://github.com/rdowd003/capstone1/blob/master/Images/ridge_alpha_est_model.png)
 
+  iiia) "New Patient" Model - Motor UPDRS Score
 
-Why is it predicting so poorly when literature supports the contrary?
+  | Model Result  | Linear Model  | Ridge Model  | Lasso Model  |
+  | --------------- |:---------------:|:---------------:|---------------:|
+  | R^2 | -1.63 | -1.48 | -1.37 |
+  | Final MSE  |  1.85  | 1.74  | 1.67  |
+  | Alpha  | N/A   | 100  | 0.01  |
+
+  iiib) "New Patient" Model - Motor UPDRS Score
+
+| Model Result  | Linear Model  | Ridge Model  | Lasso Model  |
+| --------------- |:---------------:|:---------------:|---------------:|
+| R^2 | 0.17 | 0.16 | 0.15 |
+| Final MSE  |  0.85  | 0.85  | 0.86  |
+| Alpha  | N/A   | 49.23   | 0.01  |
+
+*3. Why is it predicting so poorly when literature supports the contrary? ...
+Variable Inflation Factor Test*
 
 
 | Parameter    | Variable Inflation Factors |
