@@ -1,0 +1,249 @@
+Attribute codes and explanations
+
+Data: 42 subjects, 5,875 data points (~200/subject); voice recordings to track
+disease progression for early-state Parkinson's patients. Utilizes 16
+classically recognized voice-processing measures
+
+Data originating from:
+
+Athanasios Tsanas, Max A. Little, Patrick E. McSharry, Lorraine O. Ramig (2009),
+'Accurate telemonitoring of Parkinson’s disease progression by non-invasive
+speech tests'
+
+Data sources on:
+UCI machine learning respository
+https://archive.ics.uci.edu/ml/datasets/Parkinsons+Telemonitoring
+
+Patients: Diagnosed with early-stage parkinsons's; based on symptoms (have 2+):
+-rest tremor
+-bradykineasia (slowed movements) or rigidity
+
+-28 males/14 females; unmedicated
+
+
+*** Important note:
+UPDSRs were obtained at baseline, 3-month and 6-month sessions (x3), but
+voice recordings were collected weekly --> UPDSRs were interpolated
+(nearest neighbor)  to obtain weekly estimates (assumption that UPDSR does
+not drastically change within 3-month period)
+*** According to source (ref #40), interpolation for UPDRS is proven to
+make relatively accurate predictions
+
+Data collection:
+- 2 recording types:
+  1. sustained phonations
+  2. running speech test (patient just described an image)
+-recording was roughly 30 secs of audio
+-6 recordings were done each day
+
+
+
+Targets (predicted):
+____________________
+
+motor_UPDRS - clinicians motor UPDRS score
+Part 3 UPDRS score, has max range: 0-56
+
+total_UPDRS - clinicians total UPDRS score
+Combination of 4 categories, max range: 0-199
+
+UPDRS = Unified Parkinson's Disease Rating Scale
+
+
+Attributes (predictors):
+________________________
+
+subject# - unique identifier, between 1-42, roughly 200 recordings
+per individual
+
+age - subject age; range 36-85
+
+sex - 1/0 not sure which yet
+
+test_time - number of days since recruitment
+** Nor sorted for patients
+
+Measures of perturbation (disturbances/changes in vocal pattern):
+
+________
+Jitter: Short-term changes in pitch (within a single cycle of vibration)
+________
+
+Jitter(%) - frequency variation
+Jitter(Abs) - frequency variation
+Jitter:RAP - frequency variation
+Jitter:PPQ5 - frequency variation
+Jitter:DDP - frequency variation
+
+# http://www.fon.hum.uva.nl/praat/manual/Voice_2__Jitter.html
+
+________
+Shimmer (short-term changes in amplitude/loudness)
+________
+
+Shimmer - amplitude variation
+Shimmer(dB) - amplitude variation
+Shimmer:APQ3 - amplitude variation
+Shimmer:APQ5 - amplitude variation
+Shimmer:APQ11 - amplitude variation
+Shimmer:DDA - amplitude variation
+
+NHR - ratio of noise : tonal components in voice; noise-harmony ratio
+HNR - ratio of noise : tonal components in voice; harmonics-noise ratio
+
+RPDE - Recurrence Period Density Entropy:
+The RPDE addresses the ability of the vocal folds to sustain
+simple vibration, quantifying the deviations from exact periodicity.
+"Dysphonias" such as hoarseness or creakyness in voice often increase RPDE
+
+
+DFA - Detended Flucuation Analysis:
+Signal fractal scaling exponent - characterizes the extent of
+turbulent noise in speech signal (caused by turbulent air-flow in
+vocal tract)
+
+PPE - Pitch Period Entropy:
+A nonlinear measure of fundamental frequency variation; evaluates the
+extent of impaired control of a stable pitch (fundamental frequency)
+
+
+Goals, questions, things to test:
+
+- With all 16 attributes, can motor UPDRS and total UPDRS be predicted?
+- Gender differences, in overall metrics, and predictive ability?
+- Age? ^^
+- Correlation among attributes
+
+Rule for Number of bins:
+
+h = 2 × IQR × n^−1/3
+(max-min)/h
+
+Age, Total Score (onset), Motor Score (onset) Averages
+
+Age:
+count    5875.000000
+mean       64.804936
+std         8.821524
+min        36.000000
+25%        58.000000
+50%        65.000000
+75%        72.000000
+max        85.000000
+
+bins = (85-36)/(2*(72-58)*42^(-1/3))
+
+Motor Score at Onset:
+count    42.000000
+mean     19.567496
+std       7.977556
+min       6.000000
+25%      12.282375
+50%      18.674750
+75%      26.954500
+max      36.073000
+
+Total Score at Onset:
+count    42.000000
+mean     26.581090
+std      10.607876
+min       7.919800
+25%      18.614750
+50%      25.793000
+75%      34.033208
+max      54.073000
+
+
+Motor Score Progression:
+count    42.000000
+mean      6.823938
+std       3.878297
+min       0.962300
+25%       4.086250
+50%       5.921500
+75%       8.922250
+max      14.786000
+
+
+Total Score Progression:
+count    42.000000
+mean      8.346305
+std       4.214530
+min       0.955500
+25%       5.293250
+50%       7.778000
+75%      11.326350
+max      15.813000
+
+
+VIF test:
+VIF Factor       features
+0   5.139209e+01            age
+1   1.950397e+00            sex
+2   1.938769e+02      Jitter(%)
+3   1.930215e+01    Jitter(Abs)
+4   2.534355e+06     Jitter:RAP  --- High!
+5   5.489250e+01    Jitter:PPQ5
+6   2.534821e+06     Jitter:DDP  --- High!
+7   4.719820e+02        Shimmer
+8   2.166914e+02    Shimmer(dB)
+9   6.426684e+07   Shimmer:APQ3  --- High!
+10  1.292385e+02   Shimmer:APQ5
+11  4.417808e+01  Shimmer:APQ11
+12  6.426587e+07    Shimmer:DDA  --- High!
+13  1.034497e+01            NHR
+14  5.166406e+01            HNR
+15  4.389248e+01           RPDE
+16  9.234463e+01            DFA
+17  2.862239e+01            PPE
+
+Linear Model:
+R2 Score:  -1.656813137607871
+Final Linear MSE:  1.9995300662912445
+Linear coefficients:
+            0     coef_names
+0    0.327296            age
+1   -0.117642            sex
+2    0.038852      Jitter(%)
+3   -0.135477    Jitter(Abs)
+4    0.986216     Jitter:RAP
+5   -0.224158    Jitter:PPQ5
+6   -0.551245     Jitter:DDP
+7   -0.126465        Shimmer
+8   -0.081839    Shimmer(dB)
+9  -84.006255   Shimmer:APQ3
+10   0.263929   Shimmer:APQ5
+11  -0.002873  Shimmer:APQ11
+12  83.865098    Shimmer:DDA
+13  -0.219102            NHR
+14  -0.203831            HNR
+15   0.159428           RPDE
+16  -0.318359            DFA
+17   0.092291            PPE
+
+
+
+Lasso Model:
+R2 score is:  -1.351556871086462
+Final Lasso RSS:  1.7697927640348532
+Optimal Lasso Alpha:  0.01
+Lasso coefficients:
+           0     coef_names
+0   0.317519            age
+1  -0.089456            sex
+2   0.000000      Jitter(%)  X
+3  -0.000000    Jitter(Abs)  X
+4   0.123282     Jitter:RAP (High multicolinearity)
+5   0.000000    Jitter:PPQ5  X
+6   0.000000     Jitter:DDP  X (High multicolinearity)
+7  -0.000000        Shimmer  X
+8  -0.000000    Shimmer(dB)  X
+9  -0.050535   Shimmer:APQ3  (High multicolinearity)
+10 -0.000000   Shimmer:APQ5  X
+11  0.000000  Shimmer:APQ11  X
+12 -0.000000    Shimmer:DDA  X  (High multicolinearity)
+13 -0.147334            NHR
+14 -0.158218            HNR
+15  0.137599           RPDE
+16 -0.289457            DFA
+17  0.028579            PPE
