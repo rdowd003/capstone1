@@ -246,6 +246,12 @@ Variable Inflation Factor Test*
 | PPA| 2.86e+01 |
 
 ## Scatter matrices
+Looking at Scatter matrices for sub-categories of the features (Jitter, Shimmer, Noise & Energy)
+![Jitter](https://github.com/rdowd003/capstone1/blob/master/Images/jitter_scatter.png)
+![Shimmer](https://github.com/rdowd003/capstone1/blob/master/Images/shimmer_scatter.png)
+![Noise](https://github.com/rdowd003/capstone1/blob/master/Images/noise_scatter.png)
+![Energy](https://github.com/rdowd003/capstone1/blob/master/Images/energy_scatter.png)
+![A subset, 1 from each category with age](https://github.com/rdowd003/capstone1/blob/master/Images/subset_scatter.png)
 
 ## Future Work:
 First and foremost, future work would include the further development of this
