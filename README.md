@@ -61,7 +61,7 @@ were implemented on all sessions.
 ## Features
 The initial dataset included the following metrics (16):
 
-#### Demographics
+### Demographics
 
 **subject #** - unique patient identifier
 
