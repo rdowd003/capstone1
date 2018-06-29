@@ -58,11 +58,13 @@ were implemented on all sessions.
 
 ![Change in score over time for 5 random patients](https://github.com/rdowd003/capstone1/blob/master/Images/pt1_score_time.png)
 
+
+## Features
+
 ![Example Speech Waveform](http://web.science.mq.edu.au/~cassidy/comp449/html/vowel-waveform.gif)
 
 *[taken from: http://web.science.mq.edu.au/~cassidy/comp449/html/ch03.html]*
 
-## Features
 The initial dataset included the following demographic features and 16 classic signal processing metrics:
 
 ### Demographics
