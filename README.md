@@ -25,7 +25,7 @@ The bulk of this analysis focuses on measures of speech impairments
 (motor-category) and the use of vocal perturbance measures to predict scores
 in several patients. Several studies have reported prevalence rates of vocal
 impairment symptoms as high as 70-90% after onset in Parkinson's disease
-patient, and may be on of the earliest indicators of disease onset[1].
+patient, and may be on of the earliest indicators of disease onset[1,3].
 
 Recent literature has shown promising results illustrating the ability of the
 vocal processing metrics (used in this analysis) to distinguish healthy patients
@@ -53,8 +53,12 @@ seconds. From this data, 16 classic measures of vocal signal processing methods
 were implemented on all sessions.
 
 ## EDA Plots
-Population/scores:
 ![Distribution of Ages](https://github.com/rdowd003/capstone1/blob/master/Images/age_dist.png)
+
+
+
+
+
 ![Change in score over time for 5 random patients](https://github.com/rdowd003/capstone1/blob/master/Images/pt1_score_time.png)
 1. Distribution of scores over all; scores at beginning?
 2. Change in scores over time
@@ -223,9 +227,9 @@ Features scatters:
 | Final MSE  |  0.85  | 0.85  | 0.86  |
 | Alpha  | N/A   | 49.23   | 0.01  |
 
-*3. Why are these models predicting so poorly when literature supports the contrary? ...
-Variable Inflation Factor Test*
+*3. Why are these models predicting so poorly when literature supports the contrary?*
 
+A) Multicolinearity
 
 | Parameter    | Variable Inflation Factors |
 | --------------- |:---------------:|
@@ -234,7 +238,7 @@ Variable Inflation Factor Test*
 | Jitter(%)  | 1.94e+02   |
 | Jitter(Abs)  | 1.93e+01  |
 | Jitter:RAP | **2.53e+06**   |
-| JItter:PPQ5 |  5.49e+01  |    
+| Jitter:PPQ5 |  5.49e+01  |    
 | Jitter:DDP | **2.53e+06**   |
 | Shimmer | 4.72e+02  |
 | Shimmer(dB)| 2.17e+02 |
@@ -255,6 +259,11 @@ Looking at Scatter matrices for sub-categories of the features (Jitter, Shimmer,
 ![Noise](https://github.com/rdowd003/capstone1/blob/master/Images/noise_scatter2.png)
 ![Energy](https://github.com/rdowd003/capstone1/blob/master/Images/energy_scatter.png)
 ![A subset, 1 from each category with age](https://github.com/rdowd003/capstone1/blob/master/Images/subset_scatter.png)
+
+B) Taking a look at residuals:
+![Linear](https://github.com/rdowd003/capstone1/blob/master/Images/linear_res.png)
+![Ridge](https://github.com/rdowd003/capstone1/blob/master/Images/ridge_res.png)
+![Lasso](https://github.com/rdowd003/capstone1/blob/master/Images/lasso_res.png)
 
 ## Future Work:
 First and foremost, future work would include the further development of this
