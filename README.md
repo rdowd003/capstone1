@@ -128,9 +128,9 @@ how to analyze trends and models taking this into consideration.
 
 **1. Generating train & test splits**
 
-  i)  Training model with roughly top 75% of data, leaving data from 10 patients as unseen test data  - better for a 'new patient' model, worse predictive ability (lower R^2)
+  i) **'New Patient' model** - Training model with roughly top 75% of data, leaving data from last 10 patients as unseen test data  
 
- ii) Training model with top 75% of data of each patient, last 25% for unseen test data - 'Established patient model'
+ ii) **'Established Patient' model** - Training model with top 75% of data of each patient, last 25% from each resrved for unseen test data
 
 **2.  Model Results**
 
