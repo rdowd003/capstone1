@@ -52,7 +52,7 @@ during which they were instructed to record sustained phonations ("ahhh") for 30
 seconds. From this data, 16 classic measures of vocal signal processing methods
 were implemented on all sessions.
 
-## EDA Plots
+## EDA
 ![Distribution of Ages](https://github.com/rdowd003/capstone1/blob/master/Images/age_dist.png)
 
 
@@ -230,7 +230,7 @@ how to analyze trends and models taking this into consideration.
 | Final MSE  |  0.85  | 0.85  | 0.86  |
 | Alpha  | N/A   | 49.23   | 0.01  |
 
-*3. Why are these models predicting so poorly when literature supports the contrary?*
+**3. Why are these models predicting so poorly when literature supports the contrary?**
 
 A) Multicolinearity
 
