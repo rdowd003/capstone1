@@ -118,9 +118,9 @@ Only a few columns were removed, which included the ones that are not related
 to the disease, which included subject# and test_time. Age and sex were initially
 dropped, but eventually put them back into the model.
 
-Features scatters:
-1. Scatter matrix of overall components
-2,3,4,5. Scatter Matrices of 4 components: Jitter, Shimmer, energy, noise
+The biggest challenge with this data set was grouping the data in appropriate ways.
+With each patient having ~200 recordings, the challenge was figuring out
+how to analyze trends and models taking this into consideration. 
 
 ## Modeling
 
