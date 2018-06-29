@@ -122,6 +122,8 @@ The biggest challenge with this data set was grouping the data in appropriate wa
 With each patient having ~200 recordings, the challenge was figuring out
 how to analyze trends and models taking this into consideration.
 
+
+
 ## Modeling
 
 **1. Generating train & test splits**
@@ -205,12 +207,12 @@ how to analyze trends and models taking this into consideration.
   ![Lasso Model True Vs. Predicted](https://github.com/rdowd003/capstone1/blob/master/Images/true_pred_lasso.png)
 
 
-  Parameters that frequently had large coefficients:
-
+  ##### Parameters that frequently had large coefficients:
   - Age
   - DFA
   - HNR
   - Jitter:RAP
+
 
   iiia) "New Patient" Model - Motor UPDRS Score
 
@@ -268,6 +270,10 @@ B) Taking a look at residuals:
 ![Ridge](https://github.com/rdowd003/capstone1/blob/master/Images/ridge_res.png)
 
 ![Lasso](https://github.com/rdowd003/capstone1/blob/master/Images/lasso_res.png)
+
+C) UPDRS Scores were collected from patients at baseline, 3 month and 6 month
+marks. All scores in between were interpolated based on previously collected
+data and clinical trials.
 
 ## Future Work:
 First and foremost, future work would include the further development of this
