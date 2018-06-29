@@ -48,28 +48,33 @@ def cross_valid(X, y, base_estimator, n_folds, random_seed=154):
     return train_cv_errors, test_cv_errors
 
 
-def linear_model(X_train, X_hold, y_train, y_hold):
+def linear_model(X_train, X_hold, y_train, y_hold): #you could combine some of this with ridge and lasso making functions for various inner parts:
     ln = LinearRegression()
     linear_cv_errors_train, linear_cv_errors_test = cross_valid(X_train.values, y_train.values, ln, 10)
 
     linear_mean_cv_errors_train = linear_cv_errors_train.mean(axis=0)
     linear_mean_cv_errors_test = linear_cv_errors_test.mean(axis=0)
 
+    #def standardize(X, y):
     standardizer = XyScaler()
     standardizer.fit(X_train.values, y_train.values)
     X_train_std, y_train_std = standardizer.transform(X_train.values, y_train.values)
     X_hold_std, y_hold_std = standardizer.transform(X_hold.values, y_hold.values)
+    #return X_train_std, y_train_std, X_hold_std, y_hold_std
 
     final_linear = LinearRegression().fit(X_train_std, y_train_std)
     y_hold_pred_std = final_linear.predict(X_hold_std)
+
+    #def calculate_score(y_hold_std, y_hold_pred_std)
     final_linear_mse = mse(y_hold_std, y_hold_pred_std)
     r2 = r2_score(y_hold_std,y_hold_pred_std)
     ress = y_hold_std - y_hold_pred_std
     print("Linear R2 Score: ",r2)
     print("Final Linear MSE: ",final_linear_mse)
+    # return y_hold_std,y_hold_pred_std,ress,final_model_mse
     return (final_linear,y_hold_std,y_hold_pred_std,ress,final_linear_mse)
 
-def lasso_model(X_train, X_hold, y_train, y_hold):
+def lasso_model(X_train, X_hold, y_train, y_hold): #could be combined with ridge and lasso through common functions
     lasso_alphas = np.logspace(-2,2, num=40)
     lasso_cv_errors_train, lasso_cv_errors_test = train_at_various_alphas(X_train.values, y_train.values, Lasso, lasso_alphas)
     lasso_mean_cv_errors_train = lasso_cv_errors_train.mean(axis=0)
@@ -122,17 +127,17 @@ def get_coefs(model,X):
     df['coef_names'] = X.columns
     return df
 
-def train_at_various_alphas(X, y, model, alphas, n_folds=10, **kwargs):
+def train_at_various_alphas(X, y, model, alphas, n_folds=10, **kwargs): #nice, especially with the kwargs
     cv_errors_train = pd.DataFrame(np.empty(shape=(n_folds, len(alphas))),columns=alphas)
     cv_errors_test = pd.DataFrame(np.empty(shape=(n_folds, len(alphas))),columns=alphas)
     for alpha in alphas:
         train_fold_errors, test_fold_errors = cross_valid(X, y, model(alpha=alpha, **kwargs), n_folds=n_folds)
-        cv_errors_train.loc[:, alpha] = train_fold_errors
+        cv_errors_train.loc[:, alpha] = train_fold_errors #I think you can do cv_errors_train[alpha] =  train_fold_errors      instead
         cv_errors_test.loc[:, alpha] = test_fold_errors
     return cv_errors_train, cv_errors_test
 
 
-def get_optimal_alpha(mean_cv_errors_test):
+def get_optimal_alpha(mean_cv_errors_test): # nice
     alphas = mean_cv_errors_test.index
     optimal_idx = np.argmin(mean_cv_errors_test.values)
     optimal_alpha = alphas[optimal_idx]
@@ -202,7 +207,7 @@ y_hold2_motor = df[df['subject#']>=33]['motor_UPDRS']
 #3. Established Patient (return) Model Splits
 a = 0.75 #top a% to take for training
 b = 1-a  #tail end, b% for test
-X_est = df.groupby('subject#').apply(lambda x: x.head(int(len(x) * (a))))
+X_est = df.groupby('subject#').apply(lambda x: x.head(int(len(x) * (a))))  #couldn't you use split_test_train for this?
 X_train3 = X_est.drop(columns=['subject#','test_time','motor_UPDRS','total_UPDRS','week'])
 
 X_hold3 = df.groupby('subject#').apply(lambda x: x.tail(int(len(x) * (b))))
