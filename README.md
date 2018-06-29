@@ -57,11 +57,6 @@ were implemented on all sessions.
 
 
 ![Change in score over time for 5 random patients](https://github.com/rdowd003/capstone1/blob/master/Images/pt1_score_time.png)
-1. Distribution of scores over all; scores at beginning?
-2. Change in scores over time
-3. Individual change in scores over time
-
-
 
 ## Features
 The initial dataset included the following metrics (16):
