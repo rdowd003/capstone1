@@ -204,6 +204,14 @@ how to analyze trends and models taking this into consideration.
 
   ![Lasso Model True Vs. Predicted](https://github.com/rdowd003/capstone1/blob/master/Images/true_pred_lasso.png)
 
+
+  Parameters that frequently had large coefficients:
+
+  - Age
+  - DFA
+  - HNR
+  - Jitter:RAP
+
   iiia) "New Patient" Model - Motor UPDRS Score
 
   | Model Result  | Linear Model  | Ridge Model  | Lasso Model  |
