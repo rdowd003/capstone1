@@ -56,9 +56,6 @@ were implemented on all sessions.
 ![Distribution of Ages](https://github.com/rdowd003/capstone1/blob/master/Images/age_dist.png)
 
 
-
-
-
 ![Change in score over time for 5 random patients](https://github.com/rdowd003/capstone1/blob/master/Images/pt1_score_time.png)
 1. Distribution of scores over all; scores at beginning?
 2. Change in scores over time
@@ -85,9 +82,9 @@ The initial dataset included the following metrics (16):
 
 **Jitter(Abs)** - absolute of average
 
-**Jitter:RAP** - average of difference between a peak and the difference between it and it's two closes neighbors
+**Jitter:RAP** - average of difference between a peak and the difference between it and its two closest neighbors
 
-**Jitter:PPQ5** - 5 closes neighbors
+**Jitter:PPQ5** - 5 closest neighbors
 
 **Jitter:DDP** - average of differences between consecutive differences (Jitter(%))
 
@@ -122,8 +119,9 @@ The initial dataset included the following metrics (16):
 
 ## Feature Engineering
 
-Not a whole lot at the beginning, more just removing subject# and test time
-as these are not related
+Only a few columns were removed, which included the ones that are not related
+to the disease, which included subject# and test_time. Age and sex were initially
+dropped, but eventually put them back into the model.
 
 Features scatters:
 1. Scatter matrix of overall components
@@ -211,6 +209,8 @@ Features scatters:
 
   ![Ridge Alpha Optimization](https://github.com/rdowd003/capstone1/blob/master/Images/ridge_alpha_est_model.png)
 
+  ![Lasso Model True Vs. Predicted](https://github.com/rdowd003/capstone1/blob/master/Images/true_pred_lasso.png)
+
   iiia) "New Patient" Model - Motor UPDRS Score
 
   | Model Result  | Linear Model  | Ridge Model  | Lasso Model  |
@@ -261,8 +261,11 @@ Looking at Scatter matrices for sub-categories of the features (Jitter, Shimmer,
 ![A subset, 1 from each category with age](https://github.com/rdowd003/capstone1/blob/master/Images/subset_scatter.png)
 
 B) Taking a look at residuals:
+
 ![Linear](https://github.com/rdowd003/capstone1/blob/master/Images/linear_res.png)
+
 ![Ridge](https://github.com/rdowd003/capstone1/blob/master/Images/ridge_res.png)
+
 ![Lasso](https://github.com/rdowd003/capstone1/blob/master/Images/lasso_res.png)
 
 ## Future Work:
