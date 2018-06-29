@@ -274,10 +274,6 @@ however complicated diseases like Parkinson's can be hard to predict. A model
 that can accurately predict a patient's increase in scores over time would
 be indispensable.   
 
-*include graphs here related to changes over time*
--scores over time
--Individal patient scores change (show variation, how hard it is to predict)
-
 ### References:
 
 1. Athanasios Tsanas, Max A. Little, Patrick E. McSharry, Lorraine O. Ramig (2009),
