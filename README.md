@@ -120,7 +120,7 @@ dropped, but eventually put them back into the model.
 
 The biggest challenge with this data set was grouping the data in appropriate ways.
 With each patient having ~200 recordings, the challenge was figuring out
-how to analyze trends and models taking this into consideration. 
+how to analyze trends and models taking this into consideration.
 
 ## Modeling
 
@@ -140,8 +140,6 @@ how to analyze trends and models taking this into consideration.
 | Final MSE  |  1.99  | 1.77  | 1.99  |
 | Alpha  | N/A   | 24.24   | 0.01  |
 
-*Insert plot of ridge alpha, lasso alpha vs MSE,*
-*All 3 prediction plots?*
 
 | Parameter    | Linear  |
 | --------------- |:---------------:|
@@ -247,7 +245,7 @@ A) Multicolinearity
 | DFA | 9.23e+01 |
 | PPA| 2.86e+01 |
 
-## Scatter matrices
+#### Feature Relationships
 Looking at Scatter matrices for sub-categories of the features (Jitter, Shimmer, Noise & Energy)
 ![Jitter](https://github.com/rdowd003/capstone1/blob/master/Images/jitter_scatter.png)
 ![Shimmer](https://github.com/rdowd003/capstone1/blob/master/Images/shimmer_scatter.png)
