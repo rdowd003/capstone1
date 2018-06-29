@@ -59,7 +59,7 @@ were implemented on all sessions.
 ![Change in score over time for 5 random patients](https://github.com/rdowd003/capstone1/blob/master/Images/pt1_score_time.png)
 
 ## Features
-The initial dataset included the following metrics (16):
+The initial dataset included the following demographic features and 16 classic signal processing metrics:
 
 ### Demographics
 
