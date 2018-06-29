@@ -275,6 +275,9 @@ C) UPDRS Scores were collected from patients at baseline, 3 month and 6 month
 marks. All scores in between were interpolated based on previously collected
 data and clinical trials.
 
+D) Biological data can often be incredibly unpredictable for a number of reasons.
+
+
 ## Future Work:
 First and foremost, future work would include the further development of this
 model, taking both interactions and the possibility of non-linearity into
