@@ -65,7 +65,14 @@ were implemented on all sessions.
 
 *[taken from: http://web.science.mq.edu.au/~cassidy/comp449/html/ch03.html]*
 
-The initial dataset included the following demographic features and 16 classic signal processing metrics:
+The initial dataset included the following demographic features and 16 classic
+signal processing metrics to predict 2 targets:
+
+### Targets:
+
+**Total UPDRS Score** - total score of all symptomatic sub-categories combined
+
+**Motor UPDRS Score** - motor symptoms score 
 
 ### Demographics
 
