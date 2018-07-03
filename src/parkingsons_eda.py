@@ -17,8 +17,15 @@ df = get_df('parkinsons_data.csv')
 ###Grouping Data by patient (subject# column), assessing Final TS - Initial
 df_by_patient = df.groupby('subject#')['motor_UPDRS'].agg(np.ptp)
 df_by_patient2 = df.groupby('subject#')['age'].value_counts()
+df_by_age = df.groupby('age',as_index=False)['total_UPDRS']
 
-df_by_age = df.groupby('age')['total_UPDRS']
+#print(ages)
+df.groupby('subject#').age.mean().hist(bins=10,zorder=2)
+plt.title('Distribution of Patient Age')
+plt.xlabel('Age')
+plt.ylabel('Patient Count')
+plt.grid(zorder=0)
+plt.show()
 
 
 # Binning test_time by level (week), 1-27, each been ~7 days
@@ -131,7 +138,7 @@ df_noise = df[['total_UPDRS','motor_UPDRS','HNR','NHR','DFA']]
 df_subset = df[['total_UPDRS','motor_UPDRS','Jitter(%)','Shimmer','age','HNR','RPDE']]
 
 
-def plot_scatter(df,title,figzise):
+def plot_scatter(df,title,figzise,fname):
     ax1 = pd.plotting.scatter_matrix(df,alpha=0.2, figsize=(10, 7), diagonal='kde')
     plt.suptitle(title)
     [plt.setp(item.yaxis.get_label(), 'size', 6,rotation=80) for item in ax1.ravel()]
@@ -139,14 +146,14 @@ def plot_scatter(df,title,figzise):
     plt.subplots_adjust(left=0.1, bottom=0.1, right=None, top=None, wspace=None, hspace=None)
     [plt.setp(item.get_xticklabels(), fontsize=4)for item in ax1.ravel()]
     [plt.setp(item.get_yticklabels(), fontsize=4)for item in ax1.ravel()]
-    plt.show()
+    plt.savefig(fname)
 
 
-plot_scatter(df_jitter,'Jitter Components',(10,7))
-plot_scatter(df_shimmer,'Shimmer Components',(10,7))
-plot_scatter(df_energy,'Energy Components',(6,6))
-plot_scatter(df_noise,'Jitter Components',(6,6))
-plot_scatter(df_subset,'Subset of Overall Components',(6,6))
+#plot_scatter(df_jitter,'Jitter Components',(10,7),'jitter_scatter.png')
+#plot_scatter(df_shimmer,'Shimmer Components',(10,7),'shimmer_scatter.png')
+#plot_scatter(df_energy,'Energy Components',(6,6),'energy_scatter.png')
+#plot_scatter(df_noise,'Noise Components',(6,6),'noise_scatter2.png')
+#plot_scatter(df_subset,'Subset of Overall Components',(6,6),'subset_scatter.png')
 
 #Distribution of Scores at Onset
 fig2,(ax1,ax2) = plt.subplots(1,2,figsize=(9,5))
@@ -163,7 +170,7 @@ ax2.set_xlabel('Score')
 #ax2.set_ylim([0,8.5])
 ax2.grid(zorder=0)
 plt.suptitle('Distribution of Scores at Beginning of Trials')
-plt.show()
+plt.savefig('onset_dist_scores.png')
 
 
 

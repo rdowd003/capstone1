@@ -11,6 +11,7 @@ from utils import XyScaler
 from getdata import get_df
 from sklearn.metrics import r2_score
 import statsmodels.api as sm
+import seaborn as sns
 
 #Calculate Mean Square Error
 def mse(y, y_hat):
@@ -75,8 +76,8 @@ def lasso_model(X_train, X_hold, y_train, y_hold):
     lasso_mean_cv_errors_train = lasso_cv_errors_train.mean(axis=0)
     lasso_mean_cv_errors_test = lasso_cv_errors_test.mean(axis=0)
     lasso_optimal_alpha = get_optimal_alpha(lasso_mean_cv_errors_test)
-    save_fig(plot_mean_CV_error(lasso_mean_cv_errors_train, lasso_mean_cv_errors_test, lasso_alphas,
-    lasso_optimal_alpha,'Optimal Lasso-Alpha Level'),'lasso_alpha_new_model2.png')
+    #plot_mean_CV_error(lasso_mean_cv_errors_train, lasso_mean_cv_errors_test, lasso_alphas,
+    #lasso_optimal_alpha,'Optimal Lasso-Alpha Level')
 
 
     standardizer = XyScaler()
@@ -100,8 +101,8 @@ def ridge_model(X_train, X_hold, y_train, y_hold):
     ridge_mean_cv_errors_train = ridge_cv_errors_train.mean(axis=0)
     ridge_mean_cv_errors_test = ridge_cv_errors_test.mean(axis=0)
     ridge_optimal_alpha = get_optimal_alpha(ridge_mean_cv_errors_test)
-    save_fig(plot_mean_CV_error(ridge_mean_cv_errors_train, ridge_mean_cv_errors_test, ridge_alphas, ridge_optimal_alpha,
-    'Optimal Ridge-Alpha Level'),'ridge_alpha_new_model2.png')
+    #plot_mean_CV_error(ridge_mean_cv_errors_train, ridge_mean_cv_errors_test, ridge_alphas, ridge_optimal_alpha,
+    #'Optimal Ridge-Alpha Level')
 
     standardizer = XyScaler()
     standardizer.fit(X_train.values, y_train.values)
@@ -136,7 +137,6 @@ def get_optimal_alpha(mean_cv_errors_test):
     alphas = mean_cv_errors_test.index
     optimal_idx = np.argmin(mean_cv_errors_test.values)
     optimal_alpha = alphas[optimal_idx]
-    print(optimal_alpha)
     return optimal_alpha
 
 
@@ -157,7 +157,7 @@ def save_fig(plot_fxn,name):
     plt.savefig(name)
 
 
-def run_model(model_fxn,X_train,X_hold,y_train,y_hold,model_type):
+def run_model(model_fxn,X_train,X_hold,y_train,y_hold,model_type,res_filename):
     model = model_fxn(X_train,X_hold,y_train,y_hold)
     coeffs = get_coefs(model[0],X_train)
     return (model,coeffs)
@@ -165,15 +165,9 @@ def run_model(model_fxn,X_train,X_hold,y_train,y_hold,model_type):
     print(coeffs)
 
 
-
-
-
 #Import Data
-
-
 df = get_df('parkinsons_data.csv')
 df['week'] = pd.cut(df['test_time'],bins=27,include_lowest=True)
-#df_est = df.groupby('subject#').head(100)
 
 #Splitting Data Train/Test
 
@@ -215,44 +209,65 @@ y_hold3_motor= df.groupby('subject#')['motor_UPDRS'].apply(lambda x: x.tail(int(
 
 
 
-linear = run_model(linear_model,X_train3,X_hold3,y_train3_total,y_hold3_total,'Linear Model')
-lasso = run_model(lasso_model,X_train3,X_hold3,y_train3_total,y_hold3_total,'Lasso Model')
-ridge = run_model(ridge_model,X_train3,X_hold3,y_train3_total,y_hold3_total,'Ridge Model')
-
-#plot of residuals
-plt.scatter(linear[0][2],linear[0][3])
-plt.xlim([-4,4])
-plt.ylim([-4,4])
-plt.xlabel('True Standardized Total UPDRS Scores')
-plt.ylabel('Predicted Standardized Total UPDRS Scores')
-plt.show()
+linear = run_model(linear_model,X_train3,X_hold3,y_train3_total,y_hold3_total,'Linear Model','lin_res_est2.png')
+lasso = run_model(lasso_model,X_train3,X_hold3,y_train3_total,y_hold3_total,'Lasso Model','las_res_est2.png')
+ridge = run_model(ridge_model,X_train3,X_hold3,y_train3_total,y_hold3_total,'Ridge Model','rig_res_est2.png')
 
 
-#Plot coefficients for Lasso & Ridge
-X_cols = X_train.columns
-N=len(X_cols)
-ind = np.arange(N)
-w = 0.5
-model_coefs = linear[1]
+def res_plot(model):
+    fig = plt.figure()
+    sns.set_style('whitegrid')
+    sns.distplot(model[0][1]-model[0][2],bins=30,hist_kws=dict(edgecolor="k"))
+    plt.xlabel('UPDRS Score')
+    plt.ylabel('Frequency')
+    plt.title('Distribution of Residuals')
+    plt.show()
 
 
-### FIX THIS ###
-fig = plt.figure(figsize=(10,6))
-ax = fig.add_subplot(111)
-p1 = ax.bar(ind,model_coefs[0],w)
-p2 = ax.bar(ind+w,model_coefs[0],w)
-ax.set_xticks(ind + w / 2)
-ax.set_xticklabels(X_cols)
-ax.set_xlabel('Parameter')
-ax.set_ylabel('Standardized Coefficient')
-ax.set_title('Standardized Lasso and Ridge coefficients: New Patient Model, Motor Score')
-ax.legend((p1[0], p2[0]), ('Lasso', 'Ridge'))
-plt.axhline(0, color='blue')
-plt.xticks(rotation=45)
-plt.tight_layout()
-plt.show()
+def pred_vs_true(model,model_type):
+    plt.scatter(model[0][1],model[0][2])
+    plt.xlim([-2.5,2.5])
+    plt.ylim([-2.5,2.5])
+    plt.xlabel('True Standardized Total UPDRS Scores')
+    plt.ylabel('Predicted Standardized Total UPDRS Scores')
+    plt.title('True vs Predicted Scores: '+ model_type)
+    plt.show()
 
 
+def plot_coefficients(model1,model2,X_train_set,which):
+    X_cols = X_train_set.columns
+    N=len(X_cols)
+    ind = np.arange(N)
+    w = 0.5
+    model1_coefs = model1[1]
+    model2_coefs = model2[1]
+    fig = plt.figure(figsize=(10,6))
+    ax = fig.add_subplot(111)
+    p1 = ax.bar(ind,model1_coefs[0],w)
+    p2 = ax.bar(ind+w,model2_coefs[0],w)
+    ax.set_xticks(ind + w / 2)
+    ax.set_xticklabels(X_cols)
+    ax.set_xlabel('Parameter')
+    ax.set_ylabel('Standardized Coefficient')
+    ax.set_title('Standardized Lasso and Ridge coefficients: ' + which + ' Patient Model')
+    ax.legend((p1[0], p2[0]), ('Lasso', 'Ridge'))
+    plt.axhline(0, color='blue')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
+
+
+res_plot(linear)
+res_plot(lasso)
+res_plot(ridge)
+
+pred_vs_true(linear,'Linear Model')
+pred_vs_true(lasso,'Lasso Model')
+pred_vs_true(ridge,'Ridge Model')
+
+plot_coefficients(lasso,ridge,X_train2,'New')
+plot_coefficients(lasso,ridge,X_train3,'Establish')
 
 
 
