@@ -186,8 +186,8 @@ how to analyze trends and models taking this into consideration.
 
   | Model Result  | Linear Model  | Ridge Model  | Lasso Model  |
   | --------------- |:---------------:|:---------------:|---------------:|
-  | R^2 | 0.18 | 0.18| 0.17 |
-  | Final MSE  |  0.83  | 0.83  | 0.84  |
+  | R^2 | 0.18 | 0.27| 0.25 |
+  | Final MSE  |  0.83  | 0.44  | 0.47  |
   | Alpha  | N/A   | 49.24  | 0.01  |
 
   | Parameter    | Linear  |
